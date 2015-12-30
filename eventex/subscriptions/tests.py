@@ -34,5 +34,4 @@ class SubscriptionsTests(TestCase):
     def test_form_has_fields(self):
         """Form must have 4 fields"""
         form = self.response.context['form']
-        self.assertSequenceEqual(['name','cpf','phone','email'], list(form.fields))
-
+        self.assertSequenceEqual(['name', 'cpf', 'phone', 'email'], list(form.fields))

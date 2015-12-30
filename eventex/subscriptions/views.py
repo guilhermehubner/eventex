@@ -3,5 +3,5 @@ from eventex.subscriptions.forms import SubscriptionForm
 
 
 def subscription(request):
-    context = { 'form': SubscriptionForm() }
+    context = {'form': SubscriptionForm()}
     return render(request, 'subscription/subscription_form.html', context)
