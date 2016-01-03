@@ -3,7 +3,7 @@ from django.test import TestCase
 from eventex.subscriptions.forms import SubscriptionForm
 
 
-class SubscriptionsTests(TestCase):
+class SubscribeGet(TestCase):
     def setUp(self):
         self.response = self.client.get('/inscricao/')
 
@@ -17,11 +17,17 @@ class SubscriptionsTests(TestCase):
 
     def test_html(self):
         """HTML must contain input tags"""
-        self.assertContains(self.response, '<form')
-        self.assertContains(self.response, '<input', 6)
-        self.assertContains(self.response, 'type="text"', 3)
-        self.assertContains(self.response, 'type="email"')
-        self.assertContains(self.response, 'type="submit"')
+        tags = (
+            ('<form', 1),
+            ('<input', 6),
+            ('type="text"', 3),
+            ('type="email"', 1),
+            ('type="submit"', 1),
+        )
+
+        for text, count in tags:
+            with self.subTest():
+                self.assertContains(self.response, text, count)
 
     def test_csrf(self):
         """HTML must contain csrf_token"""
@@ -32,13 +38,8 @@ class SubscriptionsTests(TestCase):
         form = self.response.context['form']
         self.assertIsInstance(form, SubscriptionForm)
 
-    def test_form_has_fields(self):
-        """Form must have 4 fields"""
-        form = self.response.context['form']
-        self.assertSequenceEqual(['name', 'cpf', 'phone', 'email'], list(form.fields))
 
-
-class SubscriptionsPostTests(TestCase):
+class SubscribePostValid(TestCase):
     def setUp(self):
         data = {'name': 'Guilherme Hubner', 'cpf': '12345678901', 'phone': '31-99223847',
                 'email': 'guilherme_hubner@msn.com'}
@@ -52,33 +53,8 @@ class SubscriptionsPostTests(TestCase):
         """Valid POST should send one email"""
         self.assertEqual(1, len(mail.outbox))
 
-    def test_subscription_email_subject(self):
-        """Subscription email subject must be 'Confirmação de Inscrição'"""
-        email = mail.outbox[0]
-        expect = 'Confirmação de Inscrição'
-        self.assertEqual(email.subject, expect)
 
-    def test_subscription_email_from(self):
-        """Subscription email from must be 'contato@eventex.com.br'"""
-        email = mail.outbox[0]
-        expect = 'contato@eventex.com.br'
-        self.assertEqual(email.from_email, expect)
-
-    def test_subscription_email_to(self):
-        """Subscription email to must be 'guilherme_hubner@msn.com'"""
-        email = mail.outbox[0]
-        expect = ['contato@eventex.com.br', 'guilherme_hubner@msn.com']
-        self.assertEqual(email.to, expect)
-
-    def test_subscription_email_body(self):
-        """Subscription email body must have POST data"""
-        email = mail.outbox[0]
-        self.assertIn('Guilherme Hubner', email.body)
-        self.assertIn('12345678901', email.body)
-        self.assertIn('guilherme_hubner@msn.com', email.body)
-        self.assertIn('31-99223847', email.body)
-
-class SubscriptionsInvalidPost(TestCase):
+class SubscribePostInvalid(TestCase):
     def setUp(self):
         self.response = self.client.post('/inscricao/', {})
 
@@ -87,8 +63,8 @@ class SubscriptionsInvalidPost(TestCase):
         self.assertEqual(self.response.status_code, 200)
 
     def test_template(self):
-         """Invalid POST should use template subscription/subscription_form.html"""
-         self.assertTemplateUsed(self.response, 'subscription/subscription_form.html')
+        """Invalid POST should use template subscription/subscription_form.html"""
+        self.assertTemplateUsed(self.response, 'subscription/subscription_form.html')
 
     def test_has_form(self):
         """Context must have SubscriptionForm"""
@@ -100,7 +76,8 @@ class SubscriptionsInvalidPost(TestCase):
         form = self.response.context['form']
         self.assertTrue(form.errors)
 
-class SubscriptionsSuccessMessage(TestCase):
+
+class SubscribeSuccessMessage(TestCase):
     def setUp(self):
         data = {'name': 'Guilherme Hubner', 'cpf': '12345678901', 'phone': '31-99223847',
                 'email': 'guilherme_hubner@msn.com'}
