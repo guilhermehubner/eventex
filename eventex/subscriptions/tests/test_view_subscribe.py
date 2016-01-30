@@ -14,7 +14,7 @@ class SubscribeGet(TestCase):
 
     def test_template(self):
         """GET /inscricao/ must use template subscription/subscription_form.html"""
-        self.assertTemplateUsed(self.response, 'subscription/subscription_form.html')
+        self.assertTemplateUsed(self.response, 'subscriptions/subscription_form.html')
 
     def test_html(self):
         """HTML must contain input tags"""
@@ -48,7 +48,7 @@ class SubscribePostValid(TestCase):
 
     def test_post(self):
         """Valid POST should redirect to /inscricao/"""
-        self.assertEqual(self.response.status_code, 302)
+        self.assertRedirects(self.response, '/inscricao/1/')
 
     def test_send_subscribe_email(self):
         """Valid POST should send one email"""
@@ -68,7 +68,7 @@ class SubscribePostInvalid(TestCase):
 
     def test_template(self):
         """Invalid POST should use template subscription/subscription_form.html"""
-        self.assertTemplateUsed(self.response, 'subscription/subscription_form.html')
+        self.assertTemplateUsed(self.response, 'subscriptions/subscription_form.html')
 
     def test_has_form(self):
         """Context must have SubscriptionForm"""
@@ -82,13 +82,3 @@ class SubscribePostInvalid(TestCase):
 
     def test_dont_save_subscription(self):
         self.assertFalse(Subscription.objects.exists())
-
-
-class SubscribeSuccessMessage(TestCase):
-    def setUp(self):
-        data = {'name': 'Guilherme Hubner', 'cpf': '12345678901', 'phone': '31-99223847',
-                'email': 'guilherme_hubner@msn.com'}
-        self.response = self.client.post('/inscricao/', data, follow=True)
-
-    def test_message(self):
-        self.assertContains(self.response, 'Inscrição realizada com sucesso!')

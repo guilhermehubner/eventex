@@ -1,6 +1,6 @@
 # Eventex
 
-Sistema de Eventos encomendado pela Morena.
+Sistema de Eventos desenvolvido durante o curso Welcome to the Django (http://welcometothedjango.com.br/).
 
 [![Build Status](https://travis-ci.org/guilhermehubner/eventex.svg?branch=master)](https://travis-ci.org/guilhermehubner/eventex)
 

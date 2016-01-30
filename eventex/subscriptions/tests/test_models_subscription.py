@@ -9,7 +9,7 @@ class SubscriptionModelTest(TestCase):
             name='Guilherme Hübner',
             cpf='12345678901',
             email='guilherme@hubner.com',
-            phone='31-87888531'
+            phone='31-987888531'
         )
 
     def test_create(self):
