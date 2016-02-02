@@ -30,8 +30,7 @@ class SubscribePostValid(TestCase):
         contents = ['Guilherme Hubner',
                     '12345678901',
                     'guilherme_hubner@msn.com',
-                    '31-987888531',
-        ]
+                    '31-987888531']
 
         for content in contents:
             with self.subTest():
