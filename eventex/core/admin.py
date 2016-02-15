@@ -1,10 +1,16 @@
 from django.contrib import admin
-from eventex.core.models import Speaker
+from eventex.core.models import Speaker, Contact
+
+
+class ContactInline(admin.TabularInline):
+    model = Contact
+    extra = 1
 
 
 class SpeakerModelAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
     list_display = ['name', 'photo_img', 'website_link']
+    inlines = [ContactInline]
 
     def website_link(self, obj):
         return '<a href="{0}">{0}</a>'.format(obj.website)
